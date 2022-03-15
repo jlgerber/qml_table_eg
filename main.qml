@@ -204,23 +204,12 @@ ApplicationWindow {
 
                 selectionModel: ItemSelectionModel {
                     model: tableView.model
-//                    onCurrentChanged: function (current, prev) {
-//                        console.log("current changed: " + current)
-//                    }
-                    onSelectionChanged: function (sel, des) {
-                        console.log("changed")
-                    }
 
                 }
 
-                property int selected_row : -1;
-
-
                 delegate: tableviewDelegateComponent
 
-
                 columnWidthProvider: function (col) {
-                    //console.log("col ", col, " size ", tableView.model.columnSize(col))
                     return tableView.model.columnSize(col)
                 }
             }
@@ -262,7 +251,6 @@ ApplicationWindow {
             id: tableviewDelegate
             implicitWidth: tableView.columnWidthProvider(index)
             implicitHeight: tableView.row_height
-            //color: index.row === tableView.selected ? "orange" : "#222222"
             color: selected ? "orange" : "#222222"
             border.width: 1
 
@@ -270,11 +258,10 @@ ApplicationWindow {
 
             Text {
                 text: display
-                //anchors.centerIn: parent
                 anchors.left: parent.left
                 anchors.leftMargin: 5
                 anchors.verticalCenter: parent.verticalCenter
-                color: "#cccccc"
+                color: selected ? "#444444" : "#cccccc"
             }
 
             MouseArea {
@@ -283,14 +270,8 @@ ApplicationWindow {
                 onClicked: function (mouse) {
                     var mp = tableView.mapFromItem(delma, mouse.x, mouse.y)
                     var cell = tableView.cellAtPos(mp.x, mp.y, false)
-
-                    tableView.selected_row = cell.y
-                    console.log("mouse.x " +mouse.x + " mouse.y "+ mouse.y + " cell.x " + cell.x+" cell y " + cell.y)
-                    console.log("parent selected row " + tableView.selected_row)
-                    //midx = tableView.modelIndex(cell.x, cell.y)
-                    parent.selected = !parent.selected
-
-
+                    var minidx = tableView.model.index(cell.y, 0)
+                    tableView.selectionModel.select(minidx, ItemSelectionModel.Rows | ItemSelectionModel.ClearAndSelect)
                 }
             }
         }
